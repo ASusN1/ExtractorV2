@@ -1,0 +1,24 @@
+#This is a goals files 
+- This is an app where the user can download video from various sorces such as yt, fb, insta, and tiktok.
+- use yt-lpd for like libarry to download vidoe 
+
+THings need to impleemtn : 
+
+1) Main focus 
+- A working url extractor : when user enter url , extract those info then allow for video download (mp4)
+- A browse button : Whne user clcik , refer user back to save_path where they want to save. 
+- A working download button 
+
+=> FInal objective: Turn this into an exe file so the user can run it withotu visual studio ( check tutorial)
+#Extra 
+1) Add an option so user can download either sound only or video with sound 
+2) A progress bar showing download % : WHen dowloading : use blue color and as it increase to 100% : turn green. Encourter errors : Stop and turn red : show the error code 
+    - ( Additional of this: interprete code erorr meaning so that the user can understand wHy :ex) wifi connection, no storage, ...) 
+3) The ability to choose the resolution of the video: Ex) When user enter the url, press a fetch data button --> send those so it check number of resolution avalible on that video 
+Ex) Me at the zoo only has 2 : 144, 240 ; Random video : 144 up to 1080. 
+    - ( additonal of this : show the storage this video will take up : ex) 144 video take up like 50mp , 1080 take 1Gb)
+4) A video preview system 
+
+# Things need to consider 
+- If user downlaod the same video but different resolution: The name will be save as : video title + resolution ( Ex: "HelloWorld"_720)
+- if audio : video title + audio : Ex) "Me at the zoo"_audio
