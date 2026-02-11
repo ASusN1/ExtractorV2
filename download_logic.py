@@ -1,15 +1,20 @@
 import yt_dlp
 
 #Download video function
-def get_video_info(link, save_path): #run third then return to first after finish 
+def get_video_info(link, save_path, progress_callback=None): #run third then return to first after finish 
     try:
         ydl_opts = {
             'format': 'best',
             'outtmpl': save_path + '/%(title)s.%(ext)s',
         }
+        
+        # Add progress hook if callback is provided
+        if progress_callback:
+            ydl_opts['progress_hooks'] = [progress_callback]
+        
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(link, download=True)
-            print("Title: " +str({info['title']}))
+            print("Title: " + str({info['title']}))
             print("Download completed successfully.")
     except Exception as e:
         print("Error: " + str(e))
@@ -32,10 +37,14 @@ def get_video_qualities(link):
                 if video_resolution is None:
                     continue
                 fps = video_format.get("fps")
+                size_bytes = video_format.get("filesize") or video_format.get("filesize_approx") # Try to get exact filesize, if not available use approximate
+                size_text = format_storage_size(size_bytes)
                 # Build quality text like "720p (60fps)"
                 quality_text = f"{video_resolution}p"
                 if fps:
                     quality_text += f" ({fps}fps)"
+                if size_text: # Add size info if available
+                    quality_text += f" - {size_text}"
                 # Avoid duplicates
                 if quality_text not in qualities:
                     qualities.append(quality_text)
@@ -51,3 +60,15 @@ def get_video_qualities(link):
     except Exception as error:
         print("Error fetching qualities:", error)
         return []
+#------------------------------------
+def format_storage_size(storage_size):
+    if storage_size is None:
+        return None
+    size = float(storage_size)
+    for unit in ['B', 'KB', 'MB', 'GB', 'TB']:
+        if size < 1024.0:
+            return f"{size:.2f} {unit}"
+        size /= 1024.0
+    return f"{size:.2f} PB"
+
+            

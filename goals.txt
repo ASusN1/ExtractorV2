@@ -13,9 +13,9 @@ THings need to impleemtn :
 #Extra 
 1) Add an option so user can download either sound only or video with sound 
 2) A progress bar showing download % : WHen dowloading : use blue color and as it increase to 100% : turn green. Encourter errors : Stop and turn red : show the error code 
-    - ( Additional of this: interprete code erorr meaning so that the user can understand wHy :ex) wifi connection, no storage, ...) 
+    - ( Additional of this: interprete code erorr meaning so that the user can understand wHy :ex) wifi connection, no storage, ...) (DONE)
 3) The ability to choose the resolution of the video: Ex) When user enter the url, press a fetch data button --> send those so it check number of resolution avalible on that video 
-Ex) Me at the zoo only has 2 : 144, 240 ; Random video : 144 up to 1080. 
+Ex) Me at the zoo only has 2 : 144, 240 ; Random video : 144 up to 1080. (DONE)
     - ( additonal of this : show the storage this video will take up : ex) 144 video take up like 50mp , 1080 take 1Gb)
 4) A video preview system 
 

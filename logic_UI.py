@@ -1,20 +1,29 @@
+import threading
 import tkinter as tk
 from tkinter import filedialog
 from download_logic import get_video_info, get_video_qualities
 
 
-def UI_get_data(link_entry, path_entry): #keep
-#Extract values from the given Entry widgets and call downloader
+def UI_get_data(link_entry, path_entry, progress_bar, window):
+    """Extract values from Entry widgets and start download with progress tracking"""
     link = link_entry.get().strip()
     save_path = path_entry.get().strip()
+    
     if not link or not save_path:
         print("Both fields are required.")
         return
-    try:
-        get_video_info(link, save_path)
-        print("Download completed successfully.")
-    except Exception as e:
-        print(f"Error: {e}")
+    
+    # Reset progress bar
+    UI_progress_bar_update(progress_bar, 0)
+    UI_set_progress_color(progress_bar, 'blue')
+    
+    # Start download in background thread
+    thread = threading.Thread(
+        target=_download_thread,
+        args=(link, save_path, progress_bar, window),
+        daemon=True
+    )
+    thread.start()
 #----------------------------------------
 def UI_browse_path(path_entry): #keep
     # Open a directory chooser and insert the selected path into the Entry widget.
@@ -45,3 +54,58 @@ def UI_get_video_info(link_entry, quality_listbox=None): #not sure what to do wi
         print(f"Found {len(qualities)} quality options")
     except Exception as e:
         print(f"Error: {e}")
+
+#---------------------------------------------
+def UI_progress_bar_update(progress_bar, percentage):
+    #Update progress bar value
+    if progress_bar is None:
+        return
+    
+    # Clamp percentage between 0 and 100
+    percentage = max(0, min(100, percentage))
+    progress_bar['value'] = percentage
+
+#---------------------------------------------
+def UI_set_progress_color(progress_bar, color):
+    #Set progress bar color based on status
+    if progress_bar is None:
+        return
+    
+    color_styles = {
+        'blue': 'Blue.Horizontal.TProgressbar',
+        'green': 'Green.Horizontal.TProgressbar',
+        'red': 'Red.Horizontal.TProgressbar'
+    }
+    
+    style = color_styles.get(color, 'Blue.Horizontal.TProgressbar')
+    progress_bar.configure(style=style)
+
+#---------------------------------------------
+def _progress_hook(d, progress_bar, window):
+    #Process yt-dlp progress data and update UI
+    if d['status'] == 'downloading':
+        downloaded = d.get('downloaded_bytes', 0)
+        total = d.get('total_bytes') or d.get('total_bytes_estimate', 1)
+        percentage = (downloaded / total * 100) if total > 0 else 0
+        UI_set_progress_color(progress_bar, 'blue')
+        UI_progress_bar_update(progress_bar, percentage)
+        window.update_idletasks()
+    elif d['status'] == 'finished':
+        UI_set_progress_color(progress_bar, 'green')
+        UI_progress_bar_update(progress_bar, 100)
+        window.update_idletasks()
+
+#---------------------------------------------
+def _download_thread(link, save_path, progress_bar, window):
+    #Run download in background thread with progress tracking
+    def progress_callback(d):
+        _progress_hook(d, progress_bar, window)
+    
+    try:
+        get_video_info(link, save_path, progress_callback)
+        UI_set_progress_color(progress_bar, 'green')
+        print("Download completed successfully.")
+    except Exception as e:
+        print(f"Error: {e}")
+        UI_set_progress_color(progress_bar, 'red')
+        UI_progress_bar_update(progress_bar, 0)
