@@ -1,10 +1,9 @@
 import threading
 import tkinter as tk
 from tkinter import filedialog
-from download_logic import get_video_info, get_video_qualities
+from download_logic import get_video_info, get_video_qualities, get_download_option
 
-
-def UI_get_data(link_entry, path_entry, progress_bar, window):
+def UI_get_data(link_entry, path_entry, progress_bar, window, quality_listbox=None, download_option_var=None):
     """Extract values from Entry widgets and start download with progress tracking"""
     link = link_entry.get().strip()
     save_path = path_entry.get().strip()
@@ -16,11 +15,23 @@ def UI_get_data(link_entry, path_entry, progress_bar, window):
     # Reset progress bar
     UI_progress_bar_update(progress_bar, 0)
     UI_set_progress_color(progress_bar, 'blue')
+
+#WHen user select the resolution --> pass that to the download function to download the specific quality
+    selected_quality = None
+    if quality_listbox is not None:
+        selection = quality_listbox.curselection()
+        if selection:
+            selected_quality = quality_listbox.get(selection[0])
+    
+    # Get the download option (audio/video/both)
+    download_option = "both"
+    if download_option_var is not None:
+        download_option = download_option_var.get()
     
     # Start download in background thread
     thread = threading.Thread(
         target=_download_thread,
-        args=(link, save_path, progress_bar, window),
+        args=(link, save_path, progress_bar, window, selected_quality, download_option),
         daemon=True
     )
     thread.start()
@@ -96,13 +107,13 @@ def _progress_hook(d, progress_bar, window):
         window.update_idletasks()
 
 #---------------------------------------------
-def _download_thread(link, save_path, progress_bar, window):
+def _download_thread(link, save_path, progress_bar, window, selected_quality, download_option):
     #Run download in background thread with progress tracking
     def progress_callback(d):
         _progress_hook(d, progress_bar, window)
     
     try:
-        get_video_info(link, save_path, progress_callback)
+        get_video_info(link, save_path, progress_callback, selected_quality, download_option)
         UI_set_progress_color(progress_bar, 'green')
         print("Download completed successfully.")
     except Exception as e:

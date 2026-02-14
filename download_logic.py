@@ -1,12 +1,20 @@
 import yt_dlp
 
 #Download video function
-def get_video_info(link, save_path, progress_callback=None): #run third then return to first after finish 
+def get_video_info(link, save_path, progress_callback=None, selected_quality=None, download_option="both"): #run third then return to first after finish 
     try:
-        ydl_opts = {
-            'format': 'best',
-            'outtmpl': save_path + '/%(title)s.%(ext)s',
-        }
+        # Determine format based on download option
+        if download_option == "audio":
+            format_str = 'bestaudio[ext=m4a]/bestaudio'
+            output_template = save_path + '/%(title)s_audio.%(ext)s'
+        elif download_option == "video":
+            format_str = 'bestvideo[ext=mp4]/best[ext=mp4]'
+            output_template = save_path + '/%(title)s_video.%(ext)s'
+        else:  # both
+            format_str = 'best[ext=mp4]/best'
+            output_template = save_path + '/%(title)s_both.%(ext)s'
+        
+        ydl_opts = {'format': format_str,'outtmpl': output_template,}
         
         # Add progress hook if callback is provided
         if progress_callback:
@@ -71,4 +79,11 @@ def format_storage_size(storage_size):
         size /= 1024.0
     return f"{size:.2f} PB"
 
-            
+#----------------------------------------------
+# This function returns the selected download option (audio/video/both)
+def get_download_option(download_option_var):
+    """
+    Returns the download option selected by the user
+    download_option_var: The StringVar from the UI (from Radiobutton selection)
+    """
+    return download_option_var.get()
