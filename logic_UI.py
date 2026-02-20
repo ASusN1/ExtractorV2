@@ -18,10 +18,12 @@ def UI_get_data(link_entry, path_entry, progress_bar, window, quality_listbox=No
 
 #WHen user select the resolution --> pass that to the download function to download the specific quality
     selected_quality = None
+    user_selected_get_video_info = False
     if quality_listbox is not None:
         selection = quality_listbox.curselection()
         if selection:
             selected_quality = quality_listbox.get(selection[0])
+            user_selected_get_video_info = True  # User selected from quality list
     
     # Get the download option (audio/video/both)
     download_option = "both"
@@ -31,7 +33,7 @@ def UI_get_data(link_entry, path_entry, progress_bar, window, quality_listbox=No
     # Start download in background thread
     thread = threading.Thread(
         target=_download_thread,
-        args=(link, save_path, progress_bar, window, selected_quality, download_option),
+        args=(link, save_path, progress_bar, window, selected_quality, download_option, user_selected_get_video_info),
         daemon=True
     )
     thread.start()
@@ -107,13 +109,13 @@ def _progress_hook(d, progress_bar, window):
         window.update_idletasks()
 
 #---------------------------------------------
-def _download_thread(link, save_path, progress_bar, window, selected_quality, download_option):
+def _download_thread(link, save_path, progress_bar, window, selected_quality, download_option, user_selected_get_video_info):
     #Run download in background thread with progress tracking
     def progress_callback(d):
         _progress_hook(d, progress_bar, window)
     
     try:
-        get_video_info(link, save_path, progress_callback, selected_quality, download_option)
+        get_video_info(link, save_path, progress_callback, selected_quality, download_option, user_selected_get_video_info)
         UI_set_progress_color(progress_bar, 'green')
         print("Download completed successfully.")
     except Exception as e:

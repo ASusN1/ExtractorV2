@@ -17,7 +17,7 @@ THings need to impleemtn :
 3) The ability to choose the resolution of the video: Ex) When user enter the url, press a fetch data button --> send those so it check number of resolution avalible on that video 
 Ex) Me at the zoo only has 2 : 144, 240 ; Random video : 144 up to 1080. (DONE)
     - ( additonal of this : show the storage this video will take up : ex) 144 video take up like 50mp , 1080 take 1Gb)
-4) A video preview system 
+4) Naming: TItle name + download type ( audio/video/both) + resolution( Ex: 1080, 720) ( + add number if download multuple time : 1--> infinity )
 
 # Things need to consider 
 - If user downlaod the same video but different resolution: The name will be save as : video title + resolution ( Ex: "HelloWorld"_720)
