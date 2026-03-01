@@ -122,3 +122,35 @@ def _download_thread(link, save_path, progress_bar, window, selected_quality, do
         print(f"Error: {e}")
         UI_set_progress_color(progress_bar, 'red')
         UI_progress_bar_update(progress_bar, 0)
+#---------------------------------------------
+def open_settings_window(parent_window):
+    """Open settings popup window"""
+    settings_window = tk.Toplevel(parent_window)
+    settings_window.title("Settings")
+    settings_window.geometry("400x300")
+    settings_window.configure(bg="#bcb9b8")
+    
+    title_label = tk.Label(settings_window, text="Settings", font=("Arial", 14, "bold"))
+    title_label.pack(pady=10)
+    
+    content_frame = tk.Frame(settings_window)
+    content_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+    
+    content_label = tk.Label(content_frame, text="Select an option", wraplength=350, justify=tk.LEFT)
+    content_label.pack(fill=tk.BOTH, expand=True)
+    
+    def show_info():
+        content_label.config(text="Info:\nThis is the GIMME VIDEO application.\nVersion 1.0\n\nA tool to download videos easily.")
+    
+    def show_tutorial():
+        content_label.config(text="Tutorial:\n1. Enter video link\n2. Choose save path\n3. Select download option\n4. Click Get Video Info\n5. Click Download Video")
+    
+    def show_background():
+        content_label.config(text="Change Background:\nFeature coming soon")
+    
+    button_frame = tk.Frame(settings_window)
+    button_frame.pack(pady=10)
+    
+    tk.Button(button_frame, text="Info", command=show_info, width=15).pack(pady=5)
+    tk.Button(button_frame, text="Tutorial", command=show_tutorial, width=15).pack(pady=5)
+    tk.Button(button_frame, text="Change Background", command=show_background, width=15).pack(pady=5)

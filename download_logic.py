@@ -30,15 +30,15 @@ def get_video_info(link, save_path, progress_callback=None, selected_quality=Non
                     format_str = 'bestvideo[ext=mp4]/bestvideo'
                 output_template = save_path + f'/%(title)s_{unique_filename}.%(ext)s'
             else:  # both
-                # For "both", get pre-merged format with audio at selected resolution
-                # Filter for formats that have BOTH video and audio, prefer mp4
-                if resolution:
-                    # Get best pre-merged format with audio at selected resolution, prefer mp4
-                    format_str = f'best[height={resolution}][acodec!=none][ext=mp4]/best[height={resolution}][acodec!=none]/best[height<={resolution}][acodec!=none][ext=mp4]/best[height<={resolution}][acodec!=none]/best[acodec!=none][ext=mp4]/best[acodec!=none]'
-                    print(f"Downloading both video+audio at {resolution}p resolution")
+                # For "both", use the exact selected video format + best available audio
+                # This preserves the selected resolution/fps instead of re-selecting by height.
+                if format_id:
+                    format_str = f'{format_id}+bestaudio[ext=m4a]/{format_id}+bestaudio/{format_id}'
+                    if resolution:
+                        print(f"Downloading both video+audio using selected format at {resolution}p")
                 else:
-                    # Prefer mp4 format with audio
-                    format_str = 'best[acodec!=none][ext=mp4]/best[acodec!=none]/best'
+                    # Fallback when format id is unavailable
+                    format_str = 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best'
                 output_template = save_path + f'/%(title)s_{unique_filename}.%(ext)s'
             
             ydl_opts = {
