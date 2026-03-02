@@ -24,8 +24,6 @@ def get_video_info(link, save_path, progress_callback=None, selected_quality=Non
             else:
                 if format_id:
                     format_str = f'{format_id}+bestaudio[ext=m4a]/{format_id}+bestaudio/{format_id}'
-                    if resolution:
-                        print(f"Downloading both video+audio using selected format at {resolution}p")
                 else:
                     format_str = 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best'
                 output_template = save_path + f'/%(title)s_{unique_filename}.%(ext)s'
@@ -42,11 +40,9 @@ def get_video_info(link, save_path, progress_callback=None, selected_quality=Non
             ydl_opts['progress_hooks'] = [progress_callback]
         
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            info = ydl.extract_info(link, download=True)
-            print("Title: " + str({info['title']}))
-            print("Download completed successfully.")
+            ydl.extract_info(link, download=True)
     except Exception as e:
-        print("Error: " + str(e))
+        raise Exception(str(e))
 
 def get_video_qualities(link):
     try:
@@ -91,7 +87,6 @@ def get_video_qualities(link):
             )
             return qualities
     except Exception as error:
-        print("Error fetching qualities:", error)
         return []
 
 def format_storage_size(storage_size):

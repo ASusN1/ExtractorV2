@@ -1,7 +1,7 @@
 import yt_dlp
 
-#Download video function
-def get_video_info(link, save_path): #run third then return to first after finish 
+# Download video function
+def get_video_info(link, save_path):
     try:
         ydl_opts = {
             'format': 'best',
@@ -14,9 +14,8 @@ def get_video_info(link, save_path): #run third then return to first after finis
     except Exception as e:
         print(f"Error: {e}")
 
-#----------------------------------------
-#Get the user info with video + download path
-def get_user_info():  #run second
+# Get user input for video link and download path
+def get_user_info():
     while True:
         try:
             link = input("Enter the YouTube video link: ") 
@@ -26,9 +25,7 @@ def get_user_info():  #run second
             print(f"Error: {e}")
             print("Please try again.")
 
-#----------------------------------------
-#Run the program function - run first 
-def Run_program(): 
+def run_program():
     run_program = True 
     while run_program == True: 
         user_run_program = int(input("Do you want to download a YouTube video? (1 for Yes, 0 for No): "))
@@ -39,8 +36,6 @@ def Run_program():
             run_program = False 
             print("Exiting the program. Goodbye!")
 
-#----------------------------------------
-# Run the program test  version 
-Run_program()
-#----------------------------------------
+# Run the program test version
+run_program()
 

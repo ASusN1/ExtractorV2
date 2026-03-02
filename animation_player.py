@@ -5,11 +5,11 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # State mapping to image files
 STATE_IMAGES = {
-    "static": os.path.join(BASE_DIR, "computer_static.png"), #The static alway ( this is static_state)
-    "downloading": os.path.join(BASE_DIR, "computer_downloading.gif"), #play when downloading is in progress ( this is downloading_state) since this is a gif do something 
-    "success": os.path.join(BASE_DIR, "computer_download_succesfull.png"), #play when download is successful then after 10 second it will reset to static ( this is download_success_state)
-    "failed": os.path.join(BASE_DIR, "computer_download_fail.png"), #play when download fails then after 10 second it will reset to static (this is download_fail_state)
-    "error": os.path.join(BASE_DIR, "computer_error_encounter.png") #play when there is an error due to user input or  then after 10 second it will reset to static ( this is error_encounter_state)
+    "static": os.path.join(BASE_DIR, "computer_static.png"),  # Static state image
+    "downloading": os.path.join(BASE_DIR, "computer_downloading.gif"),  # Downloading state animation
+    "success": os.path.join(BASE_DIR, "computer_download_succesfull.png"),  # Success state image
+    "failed": os.path.join(BASE_DIR, "computer_download_fail.png"),  # Failed state image
+    "error": os.path.join(BASE_DIR, "computer_error_encounter.png")  # Error state image
 }
 
 # Store animation state per label using id() as key
@@ -72,7 +72,7 @@ def display_animation(label, state):
     image_path = get_image_path(state)
     
     if not os.path.exists(image_path):
-        print(f"Warning: Image not found: {image_path}")
+        print(f"Warning: image not found: {image_path}")
         return
     
     label_id = id(label)
