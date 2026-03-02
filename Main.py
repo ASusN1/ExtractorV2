@@ -1,12 +1,13 @@
 from tkinter import *
 from tkinter.ttk import *
+import os
 from logic_UI import UI_browse_path, UI_get_data, UI_get_video_info, open_settings_window
+from animation_player import display_animation
 
 
 #Create the main window
 window = Tk()
 window.title("GIMME VIDEO")
-window.geometry("600x600")
 window.configure(bg="#bcb9b8")
 #------------------------------------
 #widgets
@@ -42,8 +43,17 @@ quality_listbox.grid(row=3, column=1, rowspan=3, pady=(0, 10), columnspan=2, sti
 quality_listbox.configure(bg="#8d8986", fg="#000000")
 
 #download button
-download_button = Button(window, text="Download Video", width=20, command=lambda: UI_get_data(link_entry, path_entry, progress_bar, window, quality_listbox, download_option))
-download_button.grid(row=6, column=0, pady=(10, 20), columnspan=3)
+download_button = Button(window, text="Download Video", width=20, command=lambda: UI_get_data(link_entry, path_entry, progress_bar, window, quality_listbox, download_option, animation_label, status_label))
+download_button.grid(row=6, column=1, pady=(10, 0), sticky='w')
+
+# Status label (between download button and progress bar)
+status_label = Label(window, text="", width=60, anchor="center")
+status_label.grid(row=7, column=0, pady=(0, 8), columnspan=3)
+
+#Animation label (right side)
+animation_label = Label(window, background="#bcb9b8")
+animation_label.grid(row=3, column=2, rowspan=3, padx=(8, 0), sticky='nw')
+display_animation(animation_label, "static")  # Display static state on startup
 
 #Progress bar 
 #style progress bar 
@@ -60,10 +70,15 @@ style.configure("Green.Horizontal.TProgressbar", troughcolor='white', background
 style.configure("Red.Horizontal.TProgressbar", troughcolor='white', background='red', thickness=20)
 
 progress_bar = Progressbar(window, orient=HORIZONTAL, length=400, mode='determinate', style="Blue.Horizontal.TProgressbar")
-progress_bar.grid(row=7, column=0, pady=(0, 20), columnspan=3)
+progress_bar.grid(row=8, column=0, pady=(0, 20), columnspan=3)
 
 #Setting button 
-settings_button = Button(window, text="Settings", width=20, command=lambda: open_settings_window(window))
-settings_button.grid(row=8, column=0, pady=20, columnspan=3) 
+settings_button = Button(window, text="Settings", width=10, command=lambda: open_settings_window(window))
+settings_button.grid(row=6, column=2, pady=10)
 
+#icon 
+icon_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "computer_static.png")
+icon = PhotoImage(file=icon_path)
+window.iconphoto(True, icon)
+window.geometry("600x400")
 window.mainloop()
