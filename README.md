@@ -1,4 +1,4 @@
-# Video Downloader
+# Video Downloader    GIMME VIDEO
 A simple GUI application for downloading videos from YouTube and other platforms.
 
 ## Features
