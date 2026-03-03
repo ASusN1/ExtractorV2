@@ -18,7 +18,7 @@ A simple GUI application for downloading videos from YouTube and other platforms
 Install the required libraries:
 
     pip install yt-dlp Pillow
-## Installation - Download directly 
+## Installation - Ready to use immediately
 
     https://github.com/ASusN1/ExtractorV2/releases/tag/v1.0.0
 
