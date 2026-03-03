@@ -13,11 +13,14 @@ A simple GUI application for downloading videos from YouTube and other platforms
 - yt-dlp library
 - Pillow library (for displaying animated GIFs)
 
-## Installation
+## Installation / Visual studio version with full code 
 
 Install the required libraries:
 
     pip install yt-dlp Pillow
+## Installation - Download directly 
+
+    https://github.com/ASusN1/ExtractorV2/releases/tag/v1.0.0
 
 ## Usage
 
