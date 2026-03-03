@@ -10,48 +10,28 @@ A simple GUI application for downloading videos from YouTube and other platforms
 - Animated status indicators
 
 ## Requirements
-- Python 3.7+
-- yt-dlp
-- Pillow
+- Python 3.7 or higher
+- yt-dlp library
+- Pillow library (for displaying animated GIFs)
 
 ## Installation
 
-```bash
-pip install yt-dlp Pillow
-```
+Install the required libraries:
+
+    pip install yt-dlp Pillow
 
 ## Usage
 
-```bash
-python Main.py
-```
+Run the application:
 
+    python Main.py
+
+Steps:
 1. Paste video URL
 2. Choose save location
 3. Click "Get Video Info" to see quality options (optional)
 4. Select download type (audio/video/both)
 5. Click "Download Video"
-
-## Files to Commit to GitHub
-
-✅ **DO COMMIT:**
-- `Main.py`
-- `logic_UI.py`
-- `download_logic.py`
-- `animation_player.py`
-- All `computer_*.png` and `computer_*.gif` files
-- `.gitignore`
-- `README.md`
-
-❌ **DO NOT COMMIT:**
-- `build/` folder (contains build artifacts with personal paths)
-- `dist/` folder (contains .exe, large file)
-- `__pycache__/` folder (Python cache)
-- `*.spec` files (PyInstaller spec)
-- `goals.txt` (personal notes)
-- `test.py` (personal test file)
-
-The `.gitignore` file automatically excludes these for you.
 
 ## Legal
 Use this tool responsibly and respect copyright laws.
