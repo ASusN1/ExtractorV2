@@ -1,5 +1,4 @@
 # Video Downloader
-
 A simple GUI application for downloading videos from YouTube and other platforms.
 
 ## Features
