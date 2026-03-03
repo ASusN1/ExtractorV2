@@ -1,0 +1,27 @@
+# Build artifacts (contain personal paths)
+build/
+dist/
+*.spec
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Personal files
+goals.txt
+test.py
+
+# IDE/Editor
+.vscode/
+.idea/
+*.swp
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Downloaded videos (optional)
+# *.mp4
+# *.webm
