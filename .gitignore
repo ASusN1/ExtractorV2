@@ -9,6 +9,10 @@ __pycache__/
 *$py.class
 *.so
 
+# Local FFmpeg binaries
+ffmpeg.exe
+ffprobe.exe
+
 # Personal files
 goals.txt
 test.py

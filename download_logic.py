@@ -1,4 +1,29 @@
 import yt_dlp
+import os
+import glob
+import ffmpeg
+import sys
+
+
+def _get_runtime_base_dir():
+    if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
+        return sys._MEIPASS
+    return os.path.dirname(os.path.abspath(__file__))
+
+
+def _get_ffmpeg_executable():
+    base_dir = _get_runtime_base_dir()
+    local_ffmpeg = os.path.join(base_dir, 'ffmpeg.exe')
+    if os.path.exists(local_ffmpeg):
+        return local_ffmpeg
+    return 'ffmpeg'
+
+
+def _get_ffmpeg_location():
+    ffmpeg_exe = _get_ffmpeg_executable()
+    if ffmpeg_exe.lower().endswith('.exe') and os.path.exists(ffmpeg_exe):
+        return os.path.dirname(ffmpeg_exe)
+    return None
 
 def get_video_info(link, save_path, progress_callback=None, selected_quality=None, download_option="both", user_selected_get_video_info=False):
     try:
@@ -12,18 +37,18 @@ def get_video_info(link, save_path, progress_callback=None, selected_quality=Non
             
             unique_filename = unique_name_download(link, selected_quality, download_option)
             
+            # ALWAYS download with both audio AND video merged (complete file)
+            # Then remove audio if video-only is selected
             if download_option == "audio":
+                # Download best audio
                 format_str = 'bestaudio[ext=m4a]/bestaudio'
                 output_template = save_path + f'/%(title)s_{unique_filename}.%(ext)s'
-            elif download_option == "video":
-                if format_id:
-                    format_str = format_id
-                else:
-                    format_str = 'bestvideo[ext=mp4]/bestvideo'
-                output_template = save_path + f'/%(title)s_{unique_filename}.%(ext)s'
             else:
+                # For both and video: download with merged audio+video
                 if format_id:
                     format_str = f'{format_id}+bestaudio[ext=m4a]/{format_id}+bestaudio/{format_id}'
+                    if resolution:
+                        print(f"Downloading video+audio using selected format at {resolution}p")
                 else:
                     format_str = 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best'
                 output_template = save_path + f'/%(title)s_{unique_filename}.%(ext)s'
@@ -31,16 +56,40 @@ def get_video_info(link, save_path, progress_callback=None, selected_quality=Non
             ydl_opts = {
                 'format': format_str,
                 'outtmpl': output_template,
+                'merge_output_format': 'mp4',  # Merge audio+video as MP4 (media player compatible)
             }
         
         else:
-            ydl_opts = {'format': 'best','outtmpl': save_path + '/%(title)s_auto.%(ext)s',}
+            ydl_opts = {
+                'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best',
+                'outtmpl': save_path + '/%(title)s_auto.%(ext)s',
+                'merge_output_format': 'mp4',
+            }
 
         if progress_callback:
             ydl_opts['progress_hooks'] = [progress_callback]
+
+        ffmpeg_location = _get_ffmpeg_location()
+        if ffmpeg_location:
+            ydl_opts['ffmpeg_location'] = ffmpeg_location
         
+        downloaded_file = None
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            ydl.extract_info(link, download=True)
+            info = ydl.extract_info(link, download=True)
+            print("Title: " + str({info['title']}))
+            
+            # Get the downloaded file path
+            if 'requested_downloads' in info and len(info['requested_downloads']) > 0:
+                downloaded_file = info['requested_downloads'][0].get('filepath')
+            
+            print("Download completed successfully.")
+        
+        # Post-processing: Remove audio if video-only selected
+        if download_option == "video" and downloaded_file and os.path.exists(downloaded_file):
+            print(f"Processing: Removing audio from {os.path.basename(downloaded_file)}")
+            remove_audio_from_video(downloaded_file)
+        
+        return info if user_selected_get_video_info else None
     except Exception as e:
         raise Exception(str(e))
 
@@ -88,6 +137,39 @@ def get_video_qualities(link):
             return qualities
     except Exception as error:
         return []
+
+def remove_audio_from_video(filepath):
+    """
+    Remove audio track from video file using FFmpeg.
+    Creates a new file without audio (silent video).
+    """
+    try:
+        output_path = filepath.replace('.mp4', '_silent.mp4').replace('.mkv', '_silent.mp4')
+        
+        # Use ffmpeg-python to copy video and remove audio
+        stream = ffmpeg.input(filepath)
+        stream = ffmpeg.output(stream.video, output_path, 
+                              vcodec='copy',  # Copy video codec without re-encoding
+                              an=None)        # Remove audio
+        ffmpeg.run(
+            stream,
+            overwrite_output=True,
+            capture_stderr=True,
+            quiet=True,
+            cmd=_get_ffmpeg_executable()
+        )
+        
+        # Replace original with silent version
+        if os.path.exists(output_path):
+            os.replace(output_path, filepath)
+            print(f"Audio removed from: {filepath}")
+            return True
+    except ffmpeg.Error as e:
+        print(f"FFmpeg error removing audio: {e.stderr.decode() if e.stderr else str(e)}")
+        return False
+    except Exception as e:
+        print(f"Error removing audio: {e}")
+        return False
 
 def format_storage_size(storage_size):
     if storage_size is None:
