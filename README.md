@@ -12,15 +12,15 @@ A simple GUI application for downloading videos from YouTube and other platforms
 - Python 3.7 or higher
 - yt-dlp library
 - Pillow library (for displaying animated GIFs)
+- ffmpeg 
 
 ## Installation / Visual studio version with full code 
 
-Install the required libraries:
+    git clone https://github.com/ASusN1/ExtractorV2.git
 
-    pip install yt-dlp Pillow
 ## Installation - Ready to use immediately
 
-    https://github.com/ASusN1/ExtractorV2/releases/tag/v1.0.0
+    https://github.com/ASusN1/ExtractorV2/releases/tag/v1.0.7
 
 ## Usage
 
@@ -35,5 +35,8 @@ Steps:
 4. Select download type (audio/video/both)
 5. Click "Download Video"
 
-## Legal
-Use this tool responsibly and respect copyright laws.
+## Download Tutorial
+    https://youtu.be/dwOunn3_m6s
+## How to use the app Tutorial
+    https://youtu.be/CWONCDUnIN8
+
